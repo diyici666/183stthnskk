@@ -1,0 +1,36 @@
+name: sttt183
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'  # 每天 0 点
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5   
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12' 
+
+      - name: Run pip
+        run: |
+          pip install -r requirements.txt
+
+      - name: Set up WARP
+        uses: fscarmen/warp-on-actions@v1.2
+        with:
+          stack: dual
+        
+      - name: Setup IP
+        run: |
+          sudo curl ip.p3terx.com
+          
+      - name: Run app remotely
+        run: |
+          python run_all.py
